@@ -10,36 +10,31 @@ void PORTD_IRQHandler(void);
 int main(void)
 {
 	SystemCoreClockUpdate();
-	initLEDs();
-	clearLEDs();
+	initMotorPWM();
 	initUART2(BAUD_RATE);
 	
 	while(1) {
-		
-		
-		switch (rx_data) {
-			case 0x31:
-				led_control(RED);
+		switch(rx_data) {
+			case 0x40:
+				dir_control(LEFT);
 				break;
-			case 0x33:
-				led_control(GREEN);
+			case 0x41:
+				dir_control(RIGHT);
 				break;
-			case 0x35:
-				led_control(BLUE);
+			case 0x42:
+				dir_control(FRONT);
 				break;
-			case 0x30:
-			case 0x32:
-			case 0x34:
-				clearLEDs();
+			case 0x43:
+				dir_control(BACK);
 				break;
+			case 0x44:
 			default:
-				clearLEDs();
+				dir_control(STOP);
 				break;
+			
 		}
-		delay(0x80000);
-		
+		dir_control(RIGHT);
 	}
-		
 }
 
 void PORTD_IRQHandler() {
@@ -67,11 +62,6 @@ void PORTD_IRQHandler() {
 
 void UART2_IRQHandler() {
 	NVIC_ClearPendingIRQ(UART2_IRQn);
-	
-	//Transmit Case
-	if (UART2->S1 & UART_S1_TDRE_MASK) {
-		UART2->D = 0x69;
-	}
 	
 	//Receive Case
 	if (UART2->S1 & UART_S1_RDRF_MASK) {

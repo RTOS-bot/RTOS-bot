@@ -26,27 +26,7 @@ void initLEDs(void) {
 	
 }
 
-void initSwitch(void) {
-	// Enable Clock to PORTD
-	SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;
-	
-	// Select GPIO, enable pull-up resistors and interrupts (falling edge)
-	PORTD->PCR[SW_POS] &= ~PORT_PCR_MUX_MASK;
-	PORTD->PCR[SW_POS] |= (PORT_PCR_MUX(1) |
-												PORT_PCR_PS_MASK |
-	                      PORT_PCR_PE_MASK |
-	                      PORT_PCR_IRQC(0x0a));
-	
-	// Set Switch as Input
-	PTD->PDDR &= ~MASK(SW_POS);
-	
-	// Enable Interrupts
-	NVIC_SetPriority(PORTD_IRQn, 2); //priority can be any no. since its the only one w prio
-	NVIC_ClearPendingIRQ(PORTD_IRQn);
-	NVIC_EnableIRQ(PORTD_IRQn);
-}
-
-void initPWM(void) {
+void initMotorPWM(void) {
 	//Enable Clock to PORTB
 	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
 	
@@ -55,10 +35,14 @@ void initPWM(void) {
 	PORTB->PCR[PTB0_PIN] |= PORT_PCR_MUX(3);
 	PORTB->PCR[PTB1_PIN] &= ~PORT_PCR_MUX_MASK;
 	PORTB->PCR[PTB1_PIN] |= PORT_PCR_MUX(3);
+	PORTB->PCR[PTB2_PIN] &= ~PORT_PCR_MUX_MASK;
+	PORTB->PCR[PTB2_PIN] |= PORT_PCR_MUX(3);
+	PORTB->PCR[PTB3_PIN] &= ~PORT_PCR_MUX_MASK;
+	PORTB->PCR[PTB3_PIN] |= PORT_PCR_MUX(3);
 
-	//Enable Clock Gating for Timer1
-	SIM->SCGC6 |= SIM_SCGC6_TPM1_MASK;
-	
+	//Enable Clock Gating for Timer1 and Timer2
+	SIM->SCGC6 |= (SIM_SCGC6_TPM1_MASK | SIM_SCGC6_TPM2_MASK);
+
 	//Select clock for TPM module
 	SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
 	SIM->SOPT2 |= SIM_SOPT2_TPMSRC(1);
@@ -67,12 +51,17 @@ void initPWM(void) {
 	//               = 375000
 	// To generate 50 Hz, 375000 / 50 = 7500 <-- mod value
 	TPM1->MOD = 7500;
+	TPM2->MOD = 7500;
 	
 	//Edge-Aligned PWM
 	//Update SnC register: CMOD = 01, PS=111 (128)
 	TPM1->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
 	TPM1->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7)); //PS 7 means prescalar 128
 	TPM1->SC &= ~(TPM_SC_CPWMS_MASK);
+	
+	TPM2->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
+	TPM2->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7)); 
+	TPM2->SC &= ~(TPM_SC_CPWMS_MASK);
 	
 	// Enable PWM on TPM1 Channel 0 -> PTB0
 	TPM1_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
@@ -81,6 +70,14 @@ void initPWM(void) {
 	// Enable PWM on TPM1 Channel 1 -> PTB1
 	TPM1_C1SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
 	TPM1_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
+	
+	// Enable PWM on TPM2 Channel 0 -> PTB2
+	TPM2_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
+	TPM2_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
+	
+	// Enable PWM on TPM2 Channel 1 -> PTB3
+	TPM2_C1SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
+	TPM2_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
 
 void initUART2(uint32_t baud_rate) {
@@ -92,10 +89,7 @@ void initUART2(uint32_t baud_rate) {
 	//Enable Clock Gating for PORTE
 	SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
 	
-	//Connect UART to port E pins
-	PORTE->PCR[UART_TX_PORTE22] &= ~PORT_PCR_MUX_MASK;
-	PORTE->PCR[UART_TX_PORTE22] |= PORT_PCR_MUX(4);
-	
+	//Connect UART (RX) to port E pins
 	PORTE->PCR[UART_RX_PORTE23] &= ~PORT_PCR_MUX_MASK;
 	PORTE->PCR[UART_RX_PORTE23] |= PORT_PCR_MUX(4);
 	
@@ -116,8 +110,8 @@ void initUART2(uint32_t baud_rate) {
 	NVIC_ClearPendingIRQ(UART2_IRQn);
 	NVIC_EnableIRQ(UART2_IRQn);
 	
-	//Enable TX/RX with TX/RX Interrupts
-	UART2->C2 |= ((UART_C2_TE_MASK) | (UART_C2_RE_MASK)| (UART_C2_TIE_MASK) |(UART_C2_RIE_MASK));
+	//Enable RX with RX Interrupts
+	UART2->C2 |= ((UART_C2_RE_MASK)|(UART_C2_RIE_MASK));
 	
 }
 
@@ -155,6 +149,26 @@ void led_control(color_t color) {
 	}
 }
 
+void dir_control(dir_t dir) {
+	switch (dir) {
+		case LEFT:
+			left_rotate(SPEED_1);
+			break;
+		case RIGHT:
+			right_rotate(SPEED_1);
+			break;
+		case FRONT:
+			forward_move(SPEED_1);
+			break;
+		case BACK:
+			backward_move(SPEED_1);
+			break;
+		case STOP:
+			stop_move();
+			break;
+	}
+}
+
 /*  UTILITY FUNCTION */
 void delay(volatile uint32_t nof) {
   while(nof!=0) {
@@ -163,5 +177,51 @@ void delay(volatile uint32_t nof) {
   }
 }
 
+void forward_move(int speed) {
+	TPM1_C0V = speed;
+	TPM2_C1V = speed;
+}
 
+void backward_move(int speed) {
+	TPM1_C1V = speed;
+	TPM2_C0V = speed;
+}
+
+void left_rotate(int speed) {
+	TPM1_C0V = speed;
+	TPM2_C0V = speed;
+}
+
+void right_rotate(int speed) {
+	TPM1_C1V = speed;
+	TPM2_C1V = speed;
+}
+
+void stop_move(void) {
+	TPM1_C0V = 0;
+	TPM1_C1V = 0;
+	TPM2_C0V = 0;
+	TPM2_C1V = 0;
+}
+
+/* PROBABLY NEVER USED FUNCTIONS */
+void initSwitch(void) {
+	// Enable Clock to PORTD
+	SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;
+	
+	// Select GPIO, enable pull-up resistors and interrupts (falling edge)
+	PORTD->PCR[SW_POS] &= ~PORT_PCR_MUX_MASK;
+	PORTD->PCR[SW_POS] |= (PORT_PCR_MUX(1) |
+												PORT_PCR_PS_MASK |
+	                      PORT_PCR_PE_MASK |
+	                      PORT_PCR_IRQC(0x0a));
+	
+	// Set Switch as Input
+	PTD->PDDR &= ~MASK(SW_POS);
+	
+	// Enable Interrupts
+	NVIC_SetPriority(PORTD_IRQn, 2); //priority can be any no. since its the only one w prio
+	NVIC_ClearPendingIRQ(PORTD_IRQn);
+	NVIC_EnableIRQ(PORTD_IRQn);
+}
 
