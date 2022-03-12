@@ -1,0 +1,14 @@
+
+RTE/CMSIS/
+
+RTE/Device/MKL25Z128xxx4/
+
+RTE/_Target_1/
+
+*.Daren
+
+*.uvoptx
+
+*.uvprojx
+
+*.tmp

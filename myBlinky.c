@@ -1,5 +1,6 @@
 #include "MKL25Z4.h"                    // Device header
-#include "helper.h"
+#include "Helper/helper.h"
+#include "Helper/motor.h"
 
 volatile color_t led_color = RED;
 volatile uint8_t rx_data = 0;
@@ -14,26 +15,7 @@ int main(void)
 	initUART2(BAUD_RATE);
 	
 	while(1) {
-		switch(rx_data) {
-			case 0x40:
-				dir_control(LEFT);
-				break;
-			case 0x41:
-				dir_control(RIGHT);
-				break;
-			case 0x42:
-				dir_control(FRONT);
-				break;
-			case 0x43:
-				dir_control(BACK);
-				break;
-			case 0x44:
-			default:
-				dir_control(STOP);
-				break;
-			
-		}
-		dir_control(RIGHT);
+		move(rx_data);
 	}
 }
 

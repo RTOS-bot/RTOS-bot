@@ -26,60 +26,6 @@ void initLEDs(void) {
 	
 }
 
-void initMotorPWM(void) {
-	//Enable Clock to PORTB
-	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
-	
-	//Configure Mode 3 for PWM pin operation
-	PORTB->PCR[PTB0_PIN] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[PTB0_PIN] |= PORT_PCR_MUX(3);
-	PORTB->PCR[PTB1_PIN] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[PTB1_PIN] |= PORT_PCR_MUX(3);
-	PORTB->PCR[PTB2_PIN] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[PTB2_PIN] |= PORT_PCR_MUX(3);
-	PORTB->PCR[PTB3_PIN] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[PTB3_PIN] |= PORT_PCR_MUX(3);
-
-	//Enable Clock Gating for Timer1 and Timer2
-	SIM->SCGC6 |= (SIM_SCGC6_TPM1_MASK | SIM_SCGC6_TPM2_MASK);
-
-	//Select clock for TPM module
-	SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
-	SIM->SOPT2 |= SIM_SOPT2_TPMSRC(1);
-	
-	//Set Modulo Value 48M / 128 <-- prescalar value
-	//               = 375000
-	// To generate 50 Hz, 375000 / 50 = 7500 <-- mod value
-	TPM1->MOD = 7500;
-	TPM2->MOD = 7500;
-	
-	//Edge-Aligned PWM
-	//Update SnC register: CMOD = 01, PS=111 (128)
-	TPM1->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
-	TPM1->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7)); //PS 7 means prescalar 128
-	TPM1->SC &= ~(TPM_SC_CPWMS_MASK);
-	
-	TPM2->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
-	TPM2->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7)); 
-	TPM2->SC &= ~(TPM_SC_CPWMS_MASK);
-	
-	// Enable PWM on TPM1 Channel 0 -> PTB0
-	TPM1_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
-	TPM1_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-	
-	// Enable PWM on TPM1 Channel 1 -> PTB1
-	TPM1_C1SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
-	TPM1_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-	
-	// Enable PWM on TPM2 Channel 0 -> PTB2
-	TPM2_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
-	TPM2_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-	
-	// Enable PWM on TPM2 Channel 1 -> PTB3
-	TPM2_C1SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
-	TPM2_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-}
-
 void initUART2(uint32_t baud_rate) {
 	uint32_t divisor, bus_clock;
 	
@@ -149,59 +95,12 @@ void led_control(color_t color) {
 	}
 }
 
-void dir_control(dir_t dir) {
-	switch (dir) {
-		case LEFT:
-			left_rotate(SPEED_1);
-			break;
-		case RIGHT:
-			right_rotate(SPEED_1);
-			break;
-		case FRONT:
-			forward_move(SPEED_1);
-			break;
-		case BACK:
-			backward_move(SPEED_1);
-			break;
-		case STOP:
-			stop_move();
-			break;
-	}
-}
-
 /*  UTILITY FUNCTION */
 void delay(volatile uint32_t nof) {
   while(nof!=0) {
     __asm("NOP");
     nof--;
   }
-}
-
-void forward_move(int speed) {
-	TPM1_C0V = speed;
-	TPM2_C1V = speed;
-}
-
-void backward_move(int speed) {
-	TPM1_C1V = speed;
-	TPM2_C0V = speed;
-}
-
-void left_rotate(int speed) {
-	TPM1_C0V = speed;
-	TPM2_C0V = speed;
-}
-
-void right_rotate(int speed) {
-	TPM1_C1V = speed;
-	TPM2_C1V = speed;
-}
-
-void stop_move(void) {
-	TPM1_C0V = 0;
-	TPM1_C1V = 0;
-	TPM2_C0V = 0;
-	TPM2_C1V = 0;
 }
 
 /* PROBABLY NEVER USED FUNCTIONS */
