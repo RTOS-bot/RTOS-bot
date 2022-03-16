@@ -13,3 +13,4 @@ uint32_t getPortMask(PORT_Type *port);
 static void delay(volatile uint32_t nof);
 
 #endif
+
