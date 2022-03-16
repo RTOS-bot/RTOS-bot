@@ -12,3 +12,10 @@ RTE/_Target_1/
 *.uvprojx
 
 *.tmp
+
+EventRecorderStub.scvd
+Listings/
+Objects/
+RTOS-bot.uvguix.jim
+Target_1.cpdsc
+
