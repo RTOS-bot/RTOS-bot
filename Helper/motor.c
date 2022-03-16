@@ -3,7 +3,7 @@
 /**
  * Initialise PWM for the 4 motors
  */
-void initMotorPWM() {
+void initMotorPWM(void) {
 	uint8_t pinsRight[NUM_PINS_MOTOR_RIGHT] = {PTB0_PIN, PTB1_PIN};	
 	uint8_t pinsLeft[NUM_PINS_MOTOR_LEFT] = {PTB2_PIN, PTB3_PIN};
 	uint8_t channelsRight[NUM_CHANNELS_MOTOR_RIGHT] = {TPM_CHANNEL0, TPM_CHANNEL1};
@@ -79,3 +79,6 @@ void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft) {
 			break;
 	}
 }
+
+
+

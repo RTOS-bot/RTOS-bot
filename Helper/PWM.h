@@ -19,3 +19,4 @@ void initModule(TPM_Type *timer, uint32_t mod);
 void initChannel(TPM_Type *timer, uint8_t channels[], uint8_t numOfChannels);
 
 #endif
+

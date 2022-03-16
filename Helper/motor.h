@@ -42,7 +42,7 @@ typedef enum dir_t {
 	STOP
 } dir_t;
 
-void initMotorPWM();
+void initMotorPWM(void);
 
 void move(uint8_t rx_data);
 
