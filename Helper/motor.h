@@ -22,14 +22,18 @@
 #define MOTOR_MOD 7500
 #define MOTOR_ALT 3
 
-#define L_CMD	0x40
-#define R_CMD	0x41
+#define LF_CMD	0x40
+#define RF_CMD	0x41
 #define F_CMD	0x42
 #define B_CMD	0x43
+#define LB_CMD 0x45
+#define RB_CMD 0x46
 
+#define RIGHT_SPEED_0 2000
 #define RIGHT_SPEED_1 3750 
 #define RIGHT_SPEED_2 5000
 #define RIGHT_SPEED_3 7500
+#define LEFT_SPEED_0  2000
 #define LEFT_SPEED_1  3750 
 #define LEFT_SPEED_2  5000
 #define LEFT_SPEED_3  7500

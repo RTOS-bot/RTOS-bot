@@ -20,17 +20,23 @@ void initMotorPWM(void) {
  */
 void move(uint8_t rx_data) {
 	switch (rx_data) {
-		case L_CMD:
-			movementControl(LEFT, RIGHT_SPEED_1, LEFT_SPEED_1);
+		case LF_CMD:
+			movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_0);
 			break;
-		case R_CMD:
-			movementControl(RIGHT, RIGHT_SPEED_1, LEFT_SPEED_1);
+		case RF_CMD:
+			movementControl(FORWARD, RIGHT_SPEED_0, LEFT_SPEED_2);
 			break;
 		case F_CMD:
 			movementControl(FORWARD, RIGHT_SPEED_1, LEFT_SPEED_1);
 			break;
 		case B_CMD:
 			movementControl(BACKWARD, RIGHT_SPEED_1, LEFT_SPEED_1);
+			break;
+		case LB_CMD:
+			movementControl(BACKWARD, RIGHT_SPEED_2, LEFT_SPEED_0);
+			break;
+		case RB_CMD:
+			movementControl(BACKWARD, RIGHT_SPEED_0, LEFT_SPEED_2);
 			break;
 		default:
 			movementControl(STOP, 0, 0);
@@ -86,11 +92,6 @@ void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft) {
 	}
 }
 
-void clearTPM(void) {
-	TPM1_C0V = 0;
-	TPM1_C1V = 0;
-	TPM2_C0V = 0;
-	TPM2_C1V = 0;
-}
+
 
 
