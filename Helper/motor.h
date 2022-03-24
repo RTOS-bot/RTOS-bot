@@ -3,7 +3,7 @@
 #include "PWM.h"
 
 #define PORT_MOTOR_RIGHT 			PORTB
-#define NUM_PINS_MOTOR_RIGHT	2
+#define NUM_PINS_MOTOR_RIGHT 2
 #define PTB0_PIN 0
 #define PTB1_PIN 1
 
@@ -47,5 +47,7 @@ void initMotorPWM(void);
 void move(uint8_t rx_data);
 
 void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft);
+
+void clearTPM(void);
 
 #endif

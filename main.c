@@ -39,6 +39,21 @@ void UART2_IRQHandler() {
 void tBrain (void *argument) {
 
   for (;;) {
+		switch(rx_data) {
+			case 0x31:
+				led_control(RED);
+				break;
+			case 0x33:
+				led_control(GREEN);
+				break;
+			case 0x35:
+				led_control(BLUE);
+				break;
+			default:
+				clearLEDs();
+				break;
+		}
+		move(rx_data);
 	}
 
 }
@@ -46,7 +61,11 @@ void tBrain (void *argument) {
 void tMotorControl (void *argument) {
  
   for (;;) {
-		move(rx_data);
+		movementControl(LEFT, RIGHT_SPEED_1, LEFT_SPEED_1);
+		movementControl(RIGHT, RIGHT_SPEED_1, LEFT_SPEED_1);
+		movementControl(FORWARD, RIGHT_SPEED_1, LEFT_SPEED_1);
+		movementControl(BACKWARD, RIGHT_SPEED_1, LEFT_SPEED_1);
+		movementControl(STOP, 0, 0);
 	}
 }
 
@@ -85,23 +104,23 @@ const osThreadAttr_t thread_attr = {
 };
 
 
-
 int main (void) {
  
   SystemCoreClockUpdate();
-	InitLEDS();
-	initAudioPWM();
+	initLEDs();
+	//initAudioPWM();
 	initMotorPWM();
 	initUART2(BAUD_RATE);
-	initSwitch();
+	//initSwitch();
+	
 
   osKernelInitialize();                
-  osThreadNew(tBrain, NULL, NULL);    
-	osThreadNew(tMotorControl, NULL, NULL);    
-  osThreadNew(tRedLED, NULL, NULL);   
-  osThreadNew(tGreenLED, NULL, NULL);    
-  osThreadNew(tAudio, NULL, NULL);    
-
+  //osThreadNew(tBrain, NULL, NULL);    
+	//osThreadNew(tMotorControl, NULL, NULL);    
+  //osThreadNew(tRedLED, NULL, NULL);   
+  //osThreadNew(tGreenLED, NULL, NULL);    
+  //osThreadNew(tAudio, NULL, NULL);    
+	osThreadNew(tBrain, NULL, NULL);
   osKernelStart();                      
   for (;;) {}
 		

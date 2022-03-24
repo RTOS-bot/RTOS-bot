@@ -11,7 +11,7 @@ uint8_t portBPins[] = {8};  // red
 uint8_t portCPins[] = {7, 0, 3, 4, 5};
 
 
-void InitLEDS(void) {
+void initLEDS(void) {
 	// Enable clock 
 	SIM->SCGC5 |= (SIM_SCGC5_PORTA_MASK | 
 									SIM_SCGC5_PORTB_MASK | 
@@ -77,7 +77,7 @@ void movingGreenLEDS (void) {
 		for (uint8_t i = 0; i < NUM_PINS_C ; i++) {
 			PTC->PSOR = (MASK(portCPins[i]));
 			osDelay(BLINK_5HZ);
-			PTA->PCOR = (MASK(portCPins[i]));
+			PTC->PCOR = (MASK(portCPins[i]));
 		}	
 
 }

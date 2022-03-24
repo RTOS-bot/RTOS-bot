@@ -14,7 +14,7 @@
 #define BLINK_5HZ 100
 
 
-void InitLEDS(void);
+void initLEDS(void);
 void blinkRedLEDS (uint32_t delayTime);
 void onALLGreenLEDS(void);
 void offALLGreenLEDS(void);

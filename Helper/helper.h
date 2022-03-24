@@ -12,7 +12,6 @@
 #include <stdint.h>
 
 typedef enum color_t {RED, GREEN, BLUE} color_t;
-//typedef enum dir_t {LEFT, RIGHT, FRONT, BACK, STOP} dir_t;
 
 void initSwitch(void);
 void initLEDs(void);

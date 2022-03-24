@@ -36,8 +36,6 @@ void move(uint8_t rx_data) {
 			movementControl(STOP, 0, 0);
 			break;
 	}
-	
-	osDelay(100);
 }
 
 /**
@@ -56,18 +54,26 @@ void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft) {
 	
 	switch(direction) {
 		case FORWARD:
+			TPM1_C1V = 0;
+			TPM2_C0V = 0;
 			TPM1_C0V = speedRight;
 			TPM2_C1V = speedLeft;
 			break;
 		case BACKWARD:
+			TPM1_C0V = 0;
+		  TPM2_C1V = 0;
 			TPM1_C1V = speedRight;
 			TPM2_C0V = speedLeft;
 			break;
 		case LEFT:
+			TPM1_C1V = 0;
+			TPM2_C1V = 0;
 			TPM1_C0V = speedRight;
 			TPM2_C0V = speedLeft;
 			break;
 		case RIGHT:
+			TPM1_C0V = 0;
+		  TPM2_C0V = 0;
 			TPM1_C1V = speedRight;
 			TPM2_C1V = speedLeft;
 			break;
@@ -80,5 +86,11 @@ void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft) {
 	}
 }
 
+void clearTPM(void) {
+	TPM1_C0V = 0;
+	TPM1_C1V = 0;
+	TPM2_C0V = 0;
+	TPM2_C1V = 0;
+}
 
 
