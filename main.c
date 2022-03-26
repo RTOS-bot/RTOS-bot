@@ -95,6 +95,7 @@ void tAudio (void *argument) {
   for (;;) {
 		moveAudioRaider();
 
+
 	}
 }
 
@@ -107,10 +108,10 @@ const osThreadAttr_t thread_attr = {
 int main (void) {
  
   SystemCoreClockUpdate();
-	initLEDs();
-	//initAudioPWM();
-	initMotorPWM();
-	initUART2(BAUD_RATE);
+	//initLEDs();
+	initAudioPWM();
+	//initMotorPWM();
+	//initUART2(BAUD_RATE);
 	//initSwitch();
 	
 
@@ -119,8 +120,7 @@ int main (void) {
 	//osThreadNew(tMotorControl, NULL, NULL);    
   //osThreadNew(tRedLED, NULL, NULL);   
   //osThreadNew(tGreenLED, NULL, NULL);    
-  //osThreadNew(tAudio, NULL, NULL);    
-	osThreadNew(tBrain, NULL, NULL);
+  osThreadNew(tAudio, NULL, NULL);    
   osKernelStart();                      
   for (;;) {}
 		
