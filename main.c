@@ -10,7 +10,7 @@
 
 
 volatile uint8_t rx_data = 0;
-volatile char isMoving = 1;
+char isMoving = 0;
 
 /* Temporary Interrupt to toggle isMoving for testing */
 void PORTD_IRQHandler() {
@@ -39,6 +39,7 @@ void UART2_IRQHandler() {
 void tBrain (void *argument) {
 
   for (;;) {
+		/*
 		switch(rx_data) {
 			case 0x31:
 				led_control(RED);
@@ -53,9 +54,9 @@ void tBrain (void *argument) {
 				clearLEDs();
 				break;
 		}
-		move(rx_data);
+		*/
+		isMoving = move(rx_data);
 	}
-
 }
 
 void tMotorControl (void *argument) {
@@ -108,18 +109,18 @@ int main (void) {
  
   SystemCoreClockUpdate();
 	initLEDs();
-	//initAudioPWM();
+	initLEDS();
+	initAudioPWM();
 	initMotorPWM();
 	initUART2(BAUD_RATE);
 	//initSwitch();
 	
 
-  osKernelInitialize();                
-  //osThreadNew(tBrain, NULL, NULL);    
+  osKernelInitialize();                 
 	//osThreadNew(tMotorControl, NULL, NULL);    
-  //osThreadNew(tRedLED, NULL, NULL);   
-  //osThreadNew(tGreenLED, NULL, NULL);    
-  //osThreadNew(tAudio, NULL, NULL);    
+  osThreadNew(tRedLED, NULL, NULL);   
+  osThreadNew(tGreenLED, NULL, NULL);    
+  osThreadNew(tAudio, NULL, NULL);    
 	osThreadNew(tBrain, NULL, NULL);
   osKernelStart();                      
   for (;;) {}
