@@ -125,8 +125,8 @@ const float victoryNoteDurations[] = {
 
 
 void initAudioPWM(void) {
-	uint8_t pinsAudio[] = {PTE29_PIN};
-	uint8_t channelsAudio[] = {TPM_CHANNEL2};
+	uint8_t pinsAudio[] = {PTE20_PIN};
+	uint8_t channelsAudio[] = {TPM_CHANNEL0};
 
 	initPWM(PORT_AUDIO, AUDIO_ALT , pinsAudio, NUM_PINS_AUDIO, 
 					TPM_AUDIO, AUDIO_MOD, channelsAudio, NUM_CHANNELS_AUDIO);
@@ -134,13 +134,13 @@ void initAudioPWM(void) {
 
 
 void tone(int noteFreq) {
-	TPM0->MOD = FREQ_TO_MOD(noteFreq);
-	TPM0_C2V = FREQ_TO_C0V(noteFreq);
+	TPM1->MOD = FREQ_TO_MOD(noteFreq);
+	TPM1_C0V = FREQ_TO_C0V(noteFreq);
 }
 
 void noTone() {
-	TPM0->MOD = 0;
-	TPM0_C2V = 0;
+	TPM1->MOD = 0;
+	TPM1_C0V = 0;
 }
 		
 
