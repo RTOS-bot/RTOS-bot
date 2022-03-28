@@ -7,10 +7,14 @@
 #include "Helper/gpio.h"
 #include "Helper/led.h"
 #include "Helper/audio.h"
+#include "Helper/core.h"
+
 
 
 volatile uint8_t rx_data = 0;
-volatile char isMoving = 1;
+volatile char isMoving = 0;
+
+
 
 /* Temporary Interrupt to toggle isMoving for testing */
 void PORTD_IRQHandler() {
@@ -38,7 +42,9 @@ void UART2_IRQHandler() {
 
 void tBrain (void *argument) {
 
+	
   for (;;) {
+		/*
 		switch(rx_data) {
 			case 0x31:
 				led_control(RED);
@@ -53,8 +59,18 @@ void tBrain (void *argument) {
 				clearLEDs();
 				break;
 		}
-		move(rx_data);
+	*/
+		
+		// change to sending serial command from app...
+		// make sure this button is far enough and wont accidentally press
+		if (isMoving) {
+			victoryAudio();
+
+		}
+		
+		//move(rx_data);
 	}
+	
 
 }
 
@@ -93,9 +109,7 @@ void tGreenLED (void *argument) {
 void tAudio (void *argument) {
  
   for (;;) {
-		moveAudioRaider();
-
-
+		raiderMoveAudio();
 	}
 }
 
@@ -112,11 +126,14 @@ int main (void) {
 	initAudioPWM();
 	//initMotorPWM();
 	//initUART2(BAUD_RATE);
-	//initSwitch();
+	initSwitch();
 	
 
-  osKernelInitialize();                
-  //osThreadNew(tBrain, NULL, NULL);    
+  osKernelInitialize();    
+
+	musicSem = osSemaphoreNew(1,1,NULL);
+	
+  osThreadNew(tBrain, NULL, NULL);    
 	//osThreadNew(tMotorControl, NULL, NULL);    
   //osThreadNew(tRedLED, NULL, NULL);   
   //osThreadNew(tGreenLED, NULL, NULL);    

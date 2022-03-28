@@ -8,6 +8,9 @@
 
 #define MASK(x) (1 << (x))
 
+extern osSemaphoreId_t musicSem;
+
+
 uint32_t getPortMask(PORT_Type *port);
 
 static void delay(volatile uint32_t nof);

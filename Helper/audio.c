@@ -1,5 +1,7 @@
 #include "audio.h"
 #include "pwm.h"
+#include "core.h"
+
 
 const int raiderMelody[] = {
     NOTE_E4, 
@@ -148,27 +150,48 @@ void noTone() {
  * quarter note = 1000 / 4, eighth note = 1000/8, etc.
  */
 
-void playSong(const int melody[], const float noteDurations[], int num_notes) {
+void playSongWithSem(const int melody[], const float noteDurations[], int num_notes) {
 	
 	 for (int note = 0; note < num_notes; note++) {    
- 
+		osSemaphoreAcquire(musicSem, osWaitForever);
 		float noteDuration = 1000 / noteDurations[note];
+		
+		tone(melody[note]);
+		osSemaphoreRelease(musicSem);
 
+		osDelay(noteDuration);
+		noTone();
+		osDelay(noteDuration);
+    }
+}
+
+void playSongNoSem(const int melody[], const float noteDurations[], int num_notes) {
+	
+	 for (int i = 0; i < 2; i++) {    
+
+	 for (int note = 0; note < num_notes; note++) {    
+		float noteDuration = 1000 / noteDurations[note];
+		
 		tone(melody[note]);
 		osDelay(noteDuration);
 
 		noTone();
 		osDelay(noteDuration);
- 
     }
+	}
+}
+
+
+void raiderMoveAudio(void) {
+	playSongWithSem(raiderMelody, raiderNoteDurations, 38);
+}
+
+void victoryAudio(void) {
+	osSemaphoreAcquire(musicSem, osWaitForever);
+	playSongNoSem(victoryMelody, victoryNoteDurations, 24);
+	osSemaphoreRelease(musicSem);
 
 }
 
-void moveAudioRaider(void) {
-	playSong(raiderMelody, raiderNoteDurations, 38);
-	//	playSong(victoryMelody, victoryNoteDurations, 24);
-
-
-}
 
 
