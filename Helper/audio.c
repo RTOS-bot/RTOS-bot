@@ -1,7 +1,7 @@
 #include "audio.h"
 #include "pwm.h"
 
-const int melody[] = {
+const int raiderMelody[] = {
     NOTE_E4, 
     NOTE_F4,
     NOTE_G4,
@@ -60,7 +60,7 @@ const int melody[] = {
  * numbers in between
  * to have specific rhythm
  */
-const float noteDurations[] = {
+const float raiderNoteDurations[] = {
     6,16,8,1.6,
     6,16,1.4,
 
@@ -78,6 +78,47 @@ const float noteDurations[] = {
     1
 };
  
+const int victoryMelody[] = {
+	NOTE_G5,
+	NOTE_F5,
+	NOTE_E5,
+	NOTE_F5,
+	NOTE_G5,
+	NOTE_G5,
+	NOTE_G5,
+	
+	NOTE_A5,
+	NOTE_A5,
+	NOTE_A5,
+	
+	NOTE_G5,
+	NOTE_G5,
+	NOTE_G5,
+	
+	NOTE_G5,
+	NOTE_F5,
+	NOTE_E5,
+	NOTE_F5,
+	NOTE_G5,
+	NOTE_G5,
+	NOTE_G5,
+	
+	NOTE_A5,
+	NOTE_A5,
+	NOTE_A5,
+	
+	NOTE_G5,
+
+};
+
+const float victoryNoteDurations[] = {
+	8,8,8,8,8,8,4,
+	8,8,4,
+	8,8,4,
+	8,8,8,8,8,8,4,
+	8,8,4,
+	2
+};
 
 
 
@@ -101,37 +142,33 @@ void noTone() {
 }
 		
 
-void moveAudioRaider(void) {
+/* 
+ * to calculate the note duration, take one second 
+ * divided by the note type.
+ * quarter note = 1000 / 4, eighth note = 1000/8, etc.
+ */
+
+void playSong(const int melody[], const float noteDurations[], int num_notes) {
 	
-	 for (int note = 0; note < 38; note++) {    
-	/* to calculate the note duration, take one second 
-	 * divided by the note type.
-	 * quarter note = 1000 / 4, eighth note = 1000/8, etc.
-	 */
+	 for (int note = 0; note < num_notes; note++) {    
  
 		float noteDuration = 1000 / noteDurations[note];
-		//float noteDuration = 0x333333 / noteDurations[note];
 
- 
-		//special finetuning of crotchet (float 4)
-		if ((noteDurations[note] > 3.9) && (noteDurations[note] < 4.1) && (note < 13) && (note > 15)) {
-				tone(melody[note]);
-				osDelay(1000/2.5);
-				
-				noTone();
-				osDelay(10);
-				continue;
-		} 
+		tone(melody[note]);
+		osDelay(noteDuration);
 
-		else {
-			tone(melody[note]);
-			osDelay(noteDuration);
-		}
-		// stop the tone playing:
 		noTone();
 		osDelay(noteDuration);
  
     }
 
 }
+
+void moveAudioRaider(void) {
+	playSong(raiderMelody, raiderNoteDurations, 38);
+	//	playSong(victoryMelody, victoryNoteDurations, 24);
+
+
+}
+
 

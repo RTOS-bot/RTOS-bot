@@ -18,29 +18,29 @@ void initMotorPWM(void) {
  *
  * @param rx_data Hexadecimal command code received from ESP32
  */
-void move(uint8_t rx_data) {
+char move(uint8_t rx_data) {
 	switch (rx_data) {
 		case LF_CMD:
-			movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_0);
-			break;
+			movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_0);
+			return 1;
 		case RF_CMD:
-			movementControl(FORWARD, RIGHT_SPEED_0, LEFT_SPEED_2);
-			break;
+			movementControl(FORWARD, RIGHT_SPEED_0, LEFT_SPEED_3);
+			return 1;
 		case F_CMD:
-			movementControl(FORWARD, RIGHT_SPEED_1, LEFT_SPEED_1);
-			break;
+			movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+			return 1;
 		case B_CMD:
-			movementControl(BACKWARD, RIGHT_SPEED_1, LEFT_SPEED_1);
-			break;
+			movementControl(BACKWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+			return 1;
 		case LB_CMD:
-			movementControl(BACKWARD, RIGHT_SPEED_2, LEFT_SPEED_0);
-			break;
+			movementControl(BACKWARD, RIGHT_SPEED_3, LEFT_SPEED_0);
+			return 1;
 		case RB_CMD:
-			movementControl(BACKWARD, RIGHT_SPEED_0, LEFT_SPEED_2);
-			break;
+			movementControl(BACKWARD, RIGHT_SPEED_0, LEFT_SPEED_3);
+			return 1;
 		default:
 			movementControl(STOP, 0, 0);
-			break;
+			return 0;
 	}
 }
 

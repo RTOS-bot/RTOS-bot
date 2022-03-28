@@ -43,6 +43,8 @@ void initAudioPWM(void);
 void tone(int noteFreq);
 void noTone(void);
 	
+void playSong(const int melody[], const float noteDurations[], int num_notes);
+
 void moveAudioRaider(void);
 
 
