@@ -28,12 +28,13 @@
 #define B_CMD	0x43
 #define LB_CMD 0x45
 #define RB_CMD 0x46
+#define V_TUNE 0x47
 
-#define RIGHT_SPEED_0 650
+#define RIGHT_SPEED_0 300
 #define RIGHT_SPEED_1 3750 
 #define RIGHT_SPEED_2 5000
 #define RIGHT_SPEED_3 7500
-#define LEFT_SPEED_0  650
+#define LEFT_SPEED_0  200
 #define LEFT_SPEED_1  3750 
 #define LEFT_SPEED_2  5000
 #define LEFT_SPEED_3  7500

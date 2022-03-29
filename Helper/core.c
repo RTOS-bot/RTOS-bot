@@ -1,5 +1,7 @@
 #include "core.h"
 
+osSemaphoreId_t musicSem;
+
 /**
  * Obtains the port mask for SIM_SCGC5 register
  * 

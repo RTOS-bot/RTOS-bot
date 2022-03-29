@@ -7,10 +7,12 @@
 #include "Helper/gpio.h"
 #include "Helper/led.h"
 #include "Helper/audio.h"
+#include "Helper/core.h"
+
 
 
 volatile uint8_t rx_data = 0;
-char isMoving = 0;
+volatile char isMoving = 0;
 
 /* Temporary Interrupt to toggle isMoving for testing */
 void PORTD_IRQHandler() {
@@ -38,8 +40,10 @@ void UART2_IRQHandler() {
 
 void tBrain (void *argument) {
 
-  for (;;) {
-		
+  for (;;) {	
+		//if (rx_data == V_TUNE) {
+			//victoryAudio();
+		//}
 	}
 }
 
@@ -74,7 +78,7 @@ void tGreenLED (void *argument) {
 void tAudio (void *argument) {
  
   for (;;) {
-		moveAudioRaider();
+		raiderMoveAudio();
 	}
 }
 
@@ -91,12 +95,14 @@ int main (void) {
 	initAudioPWM();
 	initMotorPWM();
 	initUART2(BAUD_RATE);
-  osKernelInitialize();                 
+
+  osKernelInitialize();    
+	musicSem = osSemaphoreNew(1,1,NULL);
 	osThreadNew(tMotorControl, NULL, NULL);    
   osThreadNew(tRedLED, NULL, NULL);   
   osThreadNew(tGreenLED, NULL, NULL);    
+  osThreadNew(tBrain, NULL, NULL);    
   osThreadNew(tAudio, NULL, NULL);    
-	//osThreadNew(tBrain, NULL, NULL);
   osKernelStart();            
 	
   for (;;) {}
