@@ -7,10 +7,10 @@
 
 #define PORT_AUDIO 		PORTE
 #define NUM_PINS_AUDIO	1
-#define PTE29_PIN 29
+#define PTE20_PIN 20
 
-#define TPM_AUDIO	TPM0
-#define TPM_CHANNEL2 2
+#define TPM_AUDIO	TPM1
+#define TPM_CHANNEL0 0
 
 #define NUM_CHANNELS_AUDIO 1
 
