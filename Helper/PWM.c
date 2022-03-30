@@ -41,10 +41,10 @@ void initPortClockGating(PORT_Type *port) {
  * @param alt				ALT functionality
  */
 void initPort(PORT_Type *port, uint8_t pins[], uint8_t numOfPins, uint8_t alt) {
-  for (uint8_t i = 0; i < numOfPins; i++) {
+  	for (uint8_t i = 0; i < numOfPins; i++) {
 		port->PCR[pins[i]] &= ~PORT_PCR_MUX_MASK;
 		port->PCR[pins[i]] |= PORT_PCR_MUX(alt);
-	}
+  	}
 }
 
 /**
@@ -102,6 +102,33 @@ void initChannel(TPM_Type *timer, uint8_t channels[], uint8_t numOfChannels) {
 		TPM_CnSC_REG(timer, channels[i]) &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSA_MASK));
 		TPM_CnSC_REG(timer, channels[i]) |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 	}	
+}
+
+/**
+ * Enables channel interrupts for a timer
+ * Channel (n) Status and Control (TPMx_CnSC): Page 555 - 556
+ * 
+ * @param timer   			Timer/PWM module to initialise (TPM0, TPM1, TPM2)
+ * @param channels			List of channels of Timer/PWM module (Channel 0 to 5)
+ * @param numOfChannels	Number of channels in the list
+ * @param priority      Priority of the interrupt
+ */
+void initInterrupt(TPM_Type *timer, uint8_t channels[], uint8_t numOfChannels, uint8_t priority) {
+	for (uint8_t i = 0; i < numOfChannels; i++) {
+		TPM_CnSC_REG(timer, channels[i]) |= TPM_CnSC_CHIE(1);
+	}
+	
+	IRQn_Type interrupt;
+	if (timer == TPM0)
+		interrupt = TPM0_IRQn;
+	else if (timer == TPM1)
+		interrupt = TPM1_IRQn;
+	else if (timer == TPM2)
+		interrupt = TPM2_IRQn;
+	
+	NVIC_SetPriority(interrupt, priority);
+	NVIC_ClearPendingIRQ(interrupt);
+	NVIC_EnableIRQ(interrupt);
 }
 
 
