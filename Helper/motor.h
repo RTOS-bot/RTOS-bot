@@ -61,6 +61,4 @@ void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft);
 
 void clearTPM(void);
 
-void selfDrive(void);
-
 #endif
