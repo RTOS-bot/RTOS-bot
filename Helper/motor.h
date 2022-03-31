@@ -1,6 +1,7 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 #include "PWM.h"
+#include "ultrasonic.h"
 
 #define PORT_MOTOR_RIGHT 			PORTD
 #define NUM_PINS_MOTOR_RIGHT 2
@@ -24,10 +25,10 @@
 #define MOTOR_MOD 7500
 #define MOTOR_ALT 4
 
-#define LF_CMD	0x40
-#define RF_CMD	0x41
-#define F_CMD	0x42
-#define B_CMD	0x43
+#define LF_CMD 0x40
+#define RF_CMD 0x41
+#define F_CMD	 0x42
+#define B_CMD	 0x43
 #define LB_CMD 0x45
 #define RB_CMD 0x46
 #define V_TUNE 0x47

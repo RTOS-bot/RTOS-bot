@@ -46,6 +46,8 @@ char move(uint8_t rx_data) {
 
 void selfDriveSequence(void) {
 	//Ultrasonic Code
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	activateUltrasonic();
 	
 	//Movement Code
 	movementControl(STOP, 0, 0);
@@ -64,6 +66,13 @@ void selfDriveSequence(void) {
 	osDelay(1000);
 	movementControl(STOP, 0, 0);
 	osDelay(1000);
+	
+	// Move forward until obstacle is detected
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	activateUltrasonic();
+	
+	// Stop all movement
+	movementControl(STOP, 0, 0);
 }
 
 /**
@@ -113,7 +122,3 @@ void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft) {
 			break;
 	}
 }
-
-
-
-

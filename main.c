@@ -8,23 +8,21 @@
 #include "Helper/led.h"
 #include "Helper/audio.h"
 #include "Helper/core.h"
+#include "Helper/ultrasonic.h"
 
 volatile uint8_t rx_data = 0;
 volatile char isMoving = 0;
 osMutexId_t selfDriveMutex;
 
-/* Temporary Interrupt to toggle isMoving for testing */
-void PORTD_IRQHandler() {
-	
-	NVIC_ClearPendingIRQ(PORTD_IRQn);
-	
-	delay(0x80000);
-	isMoving ^= 1;
-	
-	//Clear INT flag
-	PORTD->ISFR |= MASK(SW_POS);
-}
+const osThreadAttr_t thread_attr = {
+	.priority = osPriorityHigh
+};
 
+/**
+ * Obtains data from the ESP32
+ * UART Status Register 1 (UARTx_S1): Page 729 - 731
+ * UART Data Register (UARTx_D): Page 734 - 735
+ */
 void UART2_IRQHandler() {
 	NVIC_ClearPendingIRQ(UART2_IRQn);
 	
@@ -32,23 +30,26 @@ void UART2_IRQHandler() {
 	if (UART2->S1 & UART_S1_RDRF_MASK) {
 		rx_data = UART2->D;
 	}
-	
-	//To-do: Add error handling case
 }
 
-
+/*----------------------------------------------------------------------------
+ * Application brain thread
+ *---------------------------------------------------------------------------*/
 void tBrain (void *argument) {
 
-  for (;;) {	
+	for (;;) {	
 		if (rx_data == V_TUNE) {
 			victoryAudio();
 		} 
 	}
 }
 
+/*----------------------------------------------------------------------------
+ * Application motor control thread
+ *---------------------------------------------------------------------------*/
 void tMotorControl (void *argument) {
  
-  for (;;) {
+	for (;;) {
 		osMutexAcquire(selfDriveMutex, osWaitForever);
 		if (rx_data != SD_CMD)
 			isMoving = move(rx_data);
@@ -56,9 +57,12 @@ void tMotorControl (void *argument) {
 	}
 }
 
+/*----------------------------------------------------------------------------
+ * Application red led thread
+ *---------------------------------------------------------------------------*/
 void tRedLED (void *argument) {
  
-  for (;;) {
+	for (;;) {
 		if (isMoving)
 			blinkRedLEDS(BLINK_1HZ);
 		else
@@ -67,9 +71,12 @@ void tRedLED (void *argument) {
 	
 }
 
+/*----------------------------------------------------------------------------
+ * Application green led thread
+ *---------------------------------------------------------------------------*/
 void tGreenLED (void *argument) {
  
-  for (;;) {
+	for (;;) {
 		if (isMoving)
 			movingGreenLEDS();
 		else
@@ -77,13 +84,19 @@ void tGreenLED (void *argument) {
 	}
 }
 
+/*----------------------------------------------------------------------------
+ * Application audio thread
+ *---------------------------------------------------------------------------*/
 void tAudio (void *argument) {
  
-  for (;;) {
+	for (;;) {
 		raiderMoveAudio();
 	}
 }
 
+/*----------------------------------------------------------------------------
+ * Application self driving thread
+ *---------------------------------------------------------------------------*/
 void tSelfDrive (void *argument) {
 	
 	for	(;;) {
@@ -96,33 +109,27 @@ void tSelfDrive (void *argument) {
 	}
 }
 
-const osThreadAttr_t thread_attr = {
-	.priority = osPriorityHigh
-};
-
-
 int main (void) {
  
-  SystemCoreClockUpdate();
+	SystemCoreClockUpdate();
 	initLEDS();
 	initAudioPWM();
 	initMotorPWM();
 	initUART2(BAUD_RATE);
+	initUltrasonic();
 
-  osKernelInitialize();    
-
+	osKernelInitialize();    
 	
-	musicSem = osSemaphoreNew(1,1,NULL);
+	musicSem = osSemaphoreNew(1, 1, NULL);
 	selfDriveMutex = osMutexNew(NULL);
-	osThreadNew(tMotorControl, NULL, NULL);   
-	osThreadNew (tSelfDrive, NULL, NULL);
-  osThreadNew(tRedLED, NULL, NULL);   
-  osThreadNew(tGreenLED, NULL, NULL);    
-  osThreadNew(tBrain, NULL, NULL);    
-  osThreadNew(tAudio, NULL, NULL);   
-	
+	osThreadNew(tMotorControl, NULL, NULL);  // Create application motor control thread
+	osThreadNew (tSelfDrive, NULL, NULL);    // Create application self drive thread
+	osThreadNew(tRedLED, NULL, NULL);        // Create application red led thread
+	osThreadNew(tGreenLED, NULL, NULL);      // Create application green led thread
+	osThreadNew(tBrain, NULL, NULL);         // Create application brain thread
+	osThreadNew(tAudio, NULL, NULL);         // Create application audio thread
 
-  osKernelStart();            
+	osKernelStart();
 	
-  for (;;) {}
+	for (;;) {}
 }

@@ -18,5 +18,7 @@ void initModule(TPM_Type *timer, uint32_t mod);
 
 void initChannel(TPM_Type *timer, uint8_t channels[], uint8_t numOfChannels);
 
+void initInterrupt(TPM_Type *timer, uint8_t channels[], uint8_t numOfChannels, uint8_t priority);
+
 #endif
 
