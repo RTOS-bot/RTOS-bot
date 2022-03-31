@@ -1,6 +1,7 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 #include "PWM.h"
+#include "ultrasonic.h"
 
 #define PORT_MOTOR_RIGHT 			PORTD
 #define NUM_PINS_MOTOR_RIGHT 2
@@ -24,13 +25,14 @@
 #define MOTOR_MOD 7500
 #define MOTOR_ALT 4
 
-#define LF_CMD	0x40
-#define RF_CMD	0x41
-#define F_CMD	0x42
-#define B_CMD	0x43
+#define LF_CMD 0x40
+#define RF_CMD 0x41
+#define F_CMD	 0x42
+#define B_CMD	 0x43
 #define LB_CMD 0x45
 #define RB_CMD 0x46
 #define V_TUNE 0x47
+#define SD_CMD 0x48
 
 #define RIGHT_SPEED_0 300
 #define RIGHT_SPEED_1 3750 
@@ -56,5 +58,7 @@ char move(uint8_t rx_data);
 void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft);
 
 void clearTPM(void);
+
+void selfDrive(void);
 
 #endif

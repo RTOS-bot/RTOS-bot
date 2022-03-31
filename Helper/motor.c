@@ -38,6 +38,9 @@ char move(uint8_t rx_data) {
 		case RB_CMD:
 			movementControl(BACKWARD, RIGHT_SPEED_0, LEFT_SPEED_3);
 			return 1;
+		case SD_CMD:
+			selfDrive();
+			return 1;
 		default:
 			movementControl(STOP, 0, 0);
 			return 0;
@@ -90,6 +93,47 @@ void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft) {
 			TPM0_C3V = speedLeft;
 			break;
 	}
+}
+
+void selfDrive(void) {
+	// Move forward until obstacle is detected
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	activateUltrasonic();
+	
+	// Turn 45 degrees to the left
+	movementControl();
+	osDelay();
+	
+	// Move forward
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay();
+	
+	// Turn 135 degrees to the right
+	movementControl();
+	osDelay();
+	
+	// Move forward
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay();
+	
+	// Turn 135 degrees to the right
+	movementControl();
+	osDelay();
+	
+	// Move forward
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay();
+	
+	// Turn 45 degrees to the left
+	movementControl();
+	osDelay();
+	
+	// Move forward until obstacle is detected
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	activateUltrasonic();
+	
+	// Stop all movement
+	movementControl(STOP, 0, 0);
 }
 
 

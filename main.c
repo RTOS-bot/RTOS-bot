@@ -8,7 +8,7 @@
 #include "Helper/led.h"
 #include "Helper/audio.h"
 #include "Helper/core.h"
-
+#include "Helper/ultrasonic.h"
 
 
 volatile uint8_t rx_data = 0;
@@ -95,6 +95,7 @@ int main (void) {
 	initAudioPWM();
 	initMotorPWM();
 	initUART2(BAUD_RATE);
+	initUltrasonic();
 
   osKernelInitialize();    
 	musicSem = osSemaphoreNew(1,1,NULL);

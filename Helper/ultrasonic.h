@@ -6,22 +6,17 @@
 #include "gpio.h"
 #include "core.h"
 
-#define PORT_US  PORTB
-#define NUM_PWM_PINS 1
-#define TRIG_PIN 2
-#define ECHO_PIN 3
+#define PORT_US   PORTD
+#define TRIG_PIN  6
+#define ECHO_PIN  7
+#define THRESHOLD 30000  // Change this to suit threshold required
 
-#define TPM_US TPM2
-#define TRIG_TPM_CH 0
-#define NUM_TPM_CH  1
+void initUltrasonic(void);
+void activateUltrasonic(void);
 
-#define US_MOD 7500
-#define US_ALT 3
-
-void initUltrasonic();
-void initUltrasonicTrig();
-void initUltrasonicEcho();
-void activateTrig();
-
+void initUltrasonicTrig(void);
+void initUltrasonicEcho(void);
+void activateTrig(void);
+void PORTD_IRQHandler(void);
 
 #endif

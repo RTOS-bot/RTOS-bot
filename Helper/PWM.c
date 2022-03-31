@@ -114,8 +114,11 @@ void initChannel(TPM_Type *timer, uint8_t channels[], uint8_t numOfChannels) {
  * @param priority      Priority of the interrupt
  */
 void initInterrupt(TPM_Type *timer, uint8_t channels[], uint8_t numOfChannels, uint8_t priority) {
+	TPM_SC_REG(timer) |= (TPM_SC_TOIE_MASK);
+	
 	for (uint8_t i = 0; i < numOfChannels; i++) {
-		TPM_CnSC_REG(timer, channels[i]) |= TPM_CnSC_CHIE(1);
+		TPM_CnSC_REG(timer, channels[i]) &= ~(TPM_CnSC_CHIE_MASK);
+		TPM_CnSC_REG(timer, channels[i]) |= (TPM_CnSC_CHIE(1));
 	}
 	
 	IRQn_Type interrupt;
