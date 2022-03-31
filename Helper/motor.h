@@ -55,6 +55,8 @@ void initMotorPWM(void);
 
 char move(uint8_t rx_data);
 
+void selfDriveSequence(void);
+
 void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft);
 
 void clearTPM(void);

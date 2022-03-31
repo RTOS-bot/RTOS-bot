@@ -21,16 +21,16 @@ void initMotorPWM(void) {
 char move(uint8_t rx_data) {
 	switch (rx_data) {
 		case LF_CMD:
-			movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_0);
+			movementControl(LEFT, RIGHT_SPEED_3, LEFT_SPEED_0);
 			return 1;
 		case RF_CMD:
-			movementControl(FORWARD, RIGHT_SPEED_0, LEFT_SPEED_3);
+			movementControl(RIGHT, RIGHT_SPEED_0, LEFT_SPEED_3);
 			return 1;
 		case F_CMD:
-			movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+			movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
 			return 1;
 		case B_CMD:
-			movementControl(BACKWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+			movementControl(BACKWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
 			return 1;
 		case LB_CMD:
 			movementControl(BACKWARD, RIGHT_SPEED_3, LEFT_SPEED_0);
@@ -45,6 +45,28 @@ char move(uint8_t rx_data) {
 			movementControl(STOP, 0, 0);
 			return 0;
 	}
+}
+
+void selfDriveSequence(void) {
+	//Ultrasonic Code
+	
+	//Movement Code
+	movementControl(STOP, 0, 0);
+	osDelay(500);
+	movementControl(LEFT, RIGHT_SPEED_3, LEFT_SPEED_0);
+	osDelay(300);
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(600);
+	movementControl(RIGHT, RIGHT_SPEED_0, LEFT_SPEED_3);
+	osDelay(1500);
+	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(400);
+	movementControl(LEFT, RIGHT_SPEED_3, LEFT_SPEED_0);
+	osDelay(300);
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(1000);
+	movementControl(STOP, 0, 0);
+	osDelay(1000);
 }
 
 /**

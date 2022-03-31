@@ -13,6 +13,7 @@
 
 volatile uint8_t rx_data = 0;
 volatile char isMoving = 0;
+osMutexId_t selfDriveMutex;
 
 /* Temporary Interrupt to toggle isMoving for testing */
 void PORTD_IRQHandler() {
@@ -41,16 +42,19 @@ void UART2_IRQHandler() {
 void tBrain (void *argument) {
 
   for (;;) {	
-		//if (rx_data == V_TUNE) {
-			//victoryAudio();
-		//}
+		if (rx_data == V_TUNE) {
+			victoryAudio();
+		} 
 	}
 }
 
 void tMotorControl (void *argument) {
  
   for (;;) {
-		isMoving = move(rx_data);
+		osMutexAcquire(selfDriveMutex, osWaitForever);
+		if (rx_data != SD_CMD)
+			isMoving = move(rx_data);
+		osMutexRelease(selfDriveMutex);
 	}
 }
 
@@ -82,6 +86,17 @@ void tAudio (void *argument) {
 	}
 }
 
+void tSelfDrive (void *argument) {
+	
+	for	(;;) {
+		if (rx_data == SD_CMD) {
+			osMutexAcquire(selfDriveMutex, osWaitForever);
+			isMoving = 1;
+			selfDriveSequence();
+			osMutexRelease(selfDriveMutex);
+		}
+	}
+}
 
 const osThreadAttr_t thread_attr = {
 	.priority = osPriorityHigh
@@ -98,12 +113,18 @@ int main (void) {
 	initUltrasonic();
 
   osKernelInitialize();    
+
+	
 	musicSem = osSemaphoreNew(1,1,NULL);
-	osThreadNew(tMotorControl, NULL, NULL);    
+	selfDriveMutex = osMutexNew(NULL);
+	osThreadNew(tMotorControl, NULL, NULL);   
+	osThreadNew (tSelfDrive, NULL, NULL);
   osThreadNew(tRedLED, NULL, NULL);   
   osThreadNew(tGreenLED, NULL, NULL);    
   osThreadNew(tBrain, NULL, NULL);    
-  osThreadNew(tAudio, NULL, NULL);    
+  osThreadNew(tAudio, NULL, NULL);   
+	
+
   osKernelStart();            
 	
   for (;;) {}
