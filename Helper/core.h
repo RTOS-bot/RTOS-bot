@@ -9,7 +9,7 @@
 #define MASK(x) (1 << (x))
 
 extern osSemaphoreId_t musicSem;
-
+extern osSemaphoreId_t selfDrivingSem;
 
 uint32_t getPortMask(PORT_Type *port);
 

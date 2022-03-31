@@ -31,6 +31,7 @@
 #define LB_CMD 0x45
 #define RB_CMD 0x46
 #define V_TUNE 0x47
+#define SD_CMD 0x48
 
 #define RIGHT_SPEED_0 300
 #define RIGHT_SPEED_1 3750 
@@ -52,6 +53,8 @@ typedef enum dir_t {
 void initMotorPWM(void);
 
 char move(uint8_t rx_data);
+
+void selfDriveSequence(void);
 
 void movementControl(dir_t direction, uint16_t speedRight, uint16_t speedLeft);
 
