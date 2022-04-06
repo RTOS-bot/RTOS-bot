@@ -5,11 +5,12 @@
 #include "PWM.h"
 #include "gpio.h"
 #include "core.h"
+#include "motor.h"
 
 #define PORT_US   PORTD
 #define TRIG_PIN  6
 #define ECHO_PIN  7
-#define THRESHOLD 30000  // Change this to suit threshold required
+#define THRESHOLD 45000  // Change this to suit threshold required
 
 void initUltrasonic(void);
 void activateUltrasonic(void);

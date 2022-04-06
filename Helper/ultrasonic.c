@@ -21,8 +21,11 @@ void initUltrasonic(void) {
  * Terminates only when a obstacle is within a set threshold
  */
 void activateUltrasonic(void) {
+
 	isUltrasonicActivated = true;
+	collisionWarningFlag = 0;
 	while (collisionWarningFlag == 0) {
+		movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
 		activateTrig();
 		osDelay(60);
 	}
@@ -35,7 +38,7 @@ void activateUltrasonic(void) {
 void initUltrasonicTrig(void) {
 	initPortClockGating(PORT_US);
 	initGPIOPin(PORT_US, TRIG_PIN);
-	PTB->PDDR |= MASK(TRIG_PIN);
+	PTD->PDDR |= MASK(TRIG_PIN);
 }
 
 /**
@@ -75,21 +78,25 @@ void activateTrig(void) {
  * (4) Sets logic of timer start back to false
  * (5) Clear the interrupt status flag
  */
-void PORTD_IRQHandler(void) {
-	
-	if (isUltrasonicActivated) {
-		if (!hasTimerStart) {
-			hasTimerStart = true;
-			startTime = osKernelGetSysTimerCount();
-		} else if (hasTimerStart) {
-			currTime = osKernelGetSysTimerCount();
-			if ((currTime - startTime) <= THRESHOLD)
-				collisionWarningFlag = 1;
-		}
-		hasTimerStart = false;
-	}
-	PORT_US->ISFR |= MASK(ECHO_PIN);
-}
 
+void PORTD_IRQHandler(void) {
+  NVIC_ClearPendingIRQ(PORTD_IRQn);
+  
+  if (isUltrasonicActivated) {
+    if (hasTimerStart == false) {
+      hasTimerStart = true;
+      startTime = osKernelGetSysTimerCount();
+    } else if (hasTimerStart == true) {
+      currTime = osKernelGetSysTimerCount();
+      uint32_t timeDiff = currTime - startTime;
+      
+      if (timeDiff <= THRESHOLD) {
+        collisionWarningFlag = 1;
+      }
+      hasTimerStart = 0;
+    }
+  }
+  PORT_US->ISFR = 0xffffffff;
+}
 
 

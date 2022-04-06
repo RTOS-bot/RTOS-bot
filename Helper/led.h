@@ -3,7 +3,7 @@
 #include "gpio.h"
 #include "cmsis_os2.h"
 
-#define NUM_PINS_A 4
+#define NUM_PINS_A 5
 #define NUM_PINS_B 1
 #define NUM_PINS_C 5
 

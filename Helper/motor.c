@@ -21,22 +21,22 @@ void initMotorPWM(void) {
 char move(uint8_t rx_data) {
 	switch (rx_data) {
 		case LF_CMD:
-			movementControl(LEFT, RIGHT_SPEED_3, LEFT_SPEED_0);
+			movementControl(FORWARD, RIGHT_SPEED_1, LEFT_SPEED_0);
 			return 1;
 		case RF_CMD:
-			movementControl(RIGHT, RIGHT_SPEED_0, LEFT_SPEED_3);
+			movementControl(FORWARD, RIGHT_SPEED_0, LEFT_SPEED_1);
 			return 1;
 		case F_CMD:
-			movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+			movementControl(FORWARD, RIGHT_SPEED_1, LEFT_SPEED_1);
 			return 1;
 		case B_CMD:
-			movementControl(BACKWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+			movementControl(BACKWARD, RIGHT_SPEED_1, LEFT_SPEED_1);
 			return 1;
 		case LB_CMD:
-			movementControl(BACKWARD, RIGHT_SPEED_3, LEFT_SPEED_0);
+			movementControl(BACKWARD, RIGHT_SPEED_1, LEFT_SPEED_0);
 			return 1;
 		case RB_CMD:
-			movementControl(BACKWARD, RIGHT_SPEED_0, LEFT_SPEED_3);
+			movementControl(BACKWARD, RIGHT_SPEED_0, LEFT_SPEED_1);
 			return 1;
 		default:
 			movementControl(STOP, 0, 0);
@@ -45,34 +45,120 @@ char move(uint8_t rx_data) {
 }
 
 void selfDriveSequence(void) {
-	//Ultrasonic Code
-	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
-	activateUltrasonic();
-	
-	//Movement Code
-	movementControl(STOP, 0, 0);
-	osDelay(500);
-	movementControl(LEFT, RIGHT_SPEED_3, LEFT_SPEED_0);
-	osDelay(300);
-	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
-	osDelay(600);
-	movementControl(RIGHT, RIGHT_SPEED_0, LEFT_SPEED_3);
-	osDelay(1500);
-	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
-	osDelay(400);
-	movementControl(LEFT, RIGHT_SPEED_3, LEFT_SPEED_0);
-	osDelay(300);
-	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
-	osDelay(1000);
-	movementControl(STOP, 0, 0);
-	osDelay(1000);
 	
 	// Move forward until obstacle is detected
-	movementControl(FORWARD, RIGHT_SPEED_2, LEFT_SPEED_2);
 	activateUltrasonic();
-	
-	// Stop all movement
+
+	//Movement Code
 	movementControl(STOP, 0, 0);
+	osDelay(400);
+	for (int i = 0; i < 4; i++) {
+		movementControl(LEFT, RIGHT_SPEED_2, LEFT_SPEED_2);
+		osDelay(580);
+		moveStop();
+	}		
+	
+	
+	/*
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(300);
+	
+	moveStop();
+	movementControl(RIGHT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(800);
+	moveStop();
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(600);
+	moveStop();
+	movementControl(RIGHT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(800);
+	moveStop();
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(600);
+	moveStop();
+	movementControl(RIGHT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(800);
+	moveStop();
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(600);
+	moveStop();
+	movementControl(RIGHT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(800);
+	moveStop();
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(600);
+	moveStop();
+	movementControl(LEFT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(600);
+	moveStop();
+	*/
+	//activateUltrasonic();
+	movementControl(STOP, 0, 0);
+	osDelay(5000);
+
+}
+
+void moveStop(void) {
+	movementControl(STOP, 0, 0);
+	osDelay(50);
+}
+
+void turnSlightRight(void) {
+	movementControl(RIGHT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(350);
+}
+
+void goForwardA(void) {
+	//movementControl(STOP, 0, 0);
+	//osDelay(10);
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(250);
+}
+
+void goForwardB(void) {
+	//movementControl(STOP, 0, 0);
+	//osDelay(10);
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(800);
+}
+
+void goForwardC(void) {
+	//movementControl(STOP, 0, 0);
+	//osDelay(10);
+	movementControl(FORWARD, RIGHT_SPEED_3, LEFT_SPEED_3);
+	osDelay(500);
+}
+void turnSlightLeft(void) {
+	movementControl(LEFT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(350);
+}
+
+void turn90RightA(void) {
+	//movementControl(STOP, 0, 0);
+	//osDelay(10);
+	movementControl(RIGHT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(720);
+}
+
+void turn90RightB(void) {
+	//movementControl(STOP, 0, 0);
+	//osDelay(10);
+	movementControl(RIGHT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(800);
+}
+
+void turn90LeftA(void) {
+	//movementControl(STOP, 0, 0);
+	//osDelay(10);
+	movementControl(LEFT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(620);
+}
+
+void turn90LeftB(void) {
+	//movementControl(STOP, 0, 0);
+	//osDelay(10);
+	movementControl(LEFT, RIGHT_SPEED_2, LEFT_SPEED_2);
+	osDelay(850);
 }
 
 /**

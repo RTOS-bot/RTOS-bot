@@ -109,6 +109,16 @@ void tSelfDrive (void *argument) {
 	}
 }
 
+
+void tTest (void *argument) {
+	
+	for (;;) {
+		activateUltrasonic();
+	}
+	
+}
+
+
 int main (void) {
  
 	SystemCoreClockUpdate();
@@ -128,7 +138,7 @@ int main (void) {
 	osThreadNew(tGreenLED, NULL, NULL);      // Create application green led thread
 	osThreadNew(tBrain, NULL, NULL);         // Create application brain thread
 	osThreadNew(tAudio, NULL, NULL);         // Create application audio thread
-
+	//osThreadNew(tTest, NULL, NULL);
 	osKernelStart();
 	
 	for (;;) {}
