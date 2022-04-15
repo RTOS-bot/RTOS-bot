@@ -14,10 +14,6 @@ volatile uint8_t rx_data = 0;
 volatile char isMoving = 0;
 osMutexId_t selfDriveMutex;
 
-const osThreadAttr_t thread_attr = {
-	.priority = osPriorityHigh
-};
-
 /**
  * Obtains data from the ESP32
  * UART Status Register 1 (UARTx_S1): Page 729 - 731
@@ -103,21 +99,11 @@ void tSelfDrive (void *argument) {
 		if (rx_data == SD_CMD) {
 			osMutexAcquire(selfDriveMutex, osWaitForever);
 			isMoving = 1;
-			selfDriveSequence();
+			selfDriveSequence(&isMoving);
 			osMutexRelease(selfDriveMutex);
 		}
 	}
 }
-
-
-void tTest (void *argument) {
-	
-	for (;;) {
-		activateUltrasonic();
-	}
-	
-}
-
 
 int main (void) {
  
@@ -138,7 +124,6 @@ int main (void) {
 	osThreadNew(tGreenLED, NULL, NULL);      // Create application green led thread
 	osThreadNew(tBrain, NULL, NULL);         // Create application brain thread
 	osThreadNew(tAudio, NULL, NULL);         // Create application audio thread
-	//osThreadNew(tTest, NULL, NULL);
 	osKernelStart();
 	
 	for (;;) {}

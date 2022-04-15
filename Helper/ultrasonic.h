@@ -14,7 +14,6 @@
 
 void initUltrasonic(void);
 void activateUltrasonic(void);
-
 void initUltrasonicTrig(void);
 void initUltrasonicEcho(void);
 void activateTrig(void);

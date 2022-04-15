@@ -4,28 +4,6 @@
 
 /* UTILITY FUNCTIONS */
 
-void initLEDs(void) {
-	
-	// Enable Clock to PORTB and PORTD
-	SIM->SCGC5 |= ((SIM_SCGC5_PORTB_MASK) | (SIM_SCGC5_PORTD_MASK));
-	
-	// Configure MUX settings to make all 3 pins GPIO
-	
-	PORTB->PCR[RED_LED] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[RED_LED] |= PORT_PCR_MUX(1);
-	
-	PORTB->PCR[GREEN_LED] &= ~PORT_PCR_MUX_MASK;
-	PORTB->PCR[GREEN_LED] |= PORT_PCR_MUX(1);
-	
-	PORTD->PCR[BLUE_LED] &= ~PORT_PCR_MUX_MASK;
-	PORTD->PCR[BLUE_LED] |= PORT_PCR_MUX(1);
-	
-	// Set Data Direction Registers for PortB and PortD
-	PTB->PDDR |= (MASK(RED_LED) | MASK(GREEN_LED));
-	PTD->PDDR |= MASK(BLUE_LED);
-	
-}
-
 void initUART2(uint32_t baud_rate) {
 	uint32_t divisor, bus_clock;
 	
@@ -104,23 +82,5 @@ void delay(volatile uint32_t nof) {
 }
 
 /* PROBABLY NEVER USED FUNCTIONS */
-void initSwitch(void) {
-	// Enable Clock to PORTD
-	SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;
-	
-	// Select GPIO, enable pull-up resistors and interrupts (falling edge)
-	PORTD->PCR[SW_POS] &= ~PORT_PCR_MUX_MASK;
-	PORTD->PCR[SW_POS] |= (PORT_PCR_MUX(1) |
-												PORT_PCR_PS_MASK |
-	                      PORT_PCR_PE_MASK |
-	                      PORT_PCR_IRQC(0x0a));
-	
-	// Set Switch as Input
-	PTD->PDDR &= ~MASK(SW_POS);
-	
-	// Enable Interrupts
-	NVIC_SetPriority(PORTD_IRQn, 2); //priority can be any no. since its the only one w prio
-	NVIC_ClearPendingIRQ(PORTD_IRQn);
-	NVIC_EnableIRQ(PORTD_IRQn);
-}
+
 

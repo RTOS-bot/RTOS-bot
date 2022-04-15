@@ -35,13 +35,17 @@
 #define SD_CMD 0x48
 
 #define RIGHT_SPEED_0 300
-#define RIGHT_SPEED_1 6000
-#define RIGHT_SPEED_2 3750
+#define RIGHT_SPEED_1 3750
+#define RIGHT_SPEED_2 6000
 #define RIGHT_SPEED_3 7500
 #define LEFT_SPEED_0  300
-#define LEFT_SPEED_1  6000 
-#define LEFT_SPEED_2  3750
+#define LEFT_SPEED_1  3750
+#define LEFT_SPEED_2  5700
 #define LEFT_SPEED_3  7500
+
+#define LT_SPD_DL 200
+#define RT_SPD_DL 350
+#define RT_SPD_DL2 450
 
 typedef enum dir_t {
 	LEFT, 
@@ -55,7 +59,7 @@ void initMotorPWM(void);
 
 char move(uint8_t rx_data);
 
-void selfDriveSequence(void);
+void selfDriveSequence(volatile char *isMoving);
 void turnSlightLeft(void);
 void turnSlightRight(void);
 void moveStop(void);
