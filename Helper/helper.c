@@ -39,48 +39,11 @@ void initUART2(uint32_t baud_rate) {
 	
 }
 
-void UART2_Transmit_Poll(uint8_t data) {
-	
-		while (!(UART2->S1 & UART_S1_TDRE_MASK));
-		UART2->D = data;
-}
 
-uint8_t UART2_Receive_Poll(void) {
-	
-	while(!(UART2->S1 & UART_S1_RDRF_MASK));
-	return (UART2->D);
-}
 
-void clearLEDs(void) {
-	// Set Data Output Registers of PortB and PortD to all 1 (active low)
-	PTB->PDOR |= ~(0);
-	PTD->PDOR |= ~(0);
-}
 
-void led_control(color_t color) {
-	// Clear before selecting register to write to, in the event that 2 ports are written together
-	clearLEDs();
-	switch (color) {
-		case RED:
-			PTB->PDOR = ~MASK(RED_LED);
-			break;
-		case GREEN:
-			PTB->PDOR = ~MASK(GREEN_LED);
-			break;
-		case BLUE:
-			PTD->PDOR = ~MASK(BLUE_LED);
-			break;
-	}
-}
 
-/*  UTILITY FUNCTION */
-void delay(volatile uint32_t nof) {
-  while(nof!=0) {
-    __asm("NOP");
-    nof--;
-  }
-}
 
-/* PROBABLY NEVER USED FUNCTIONS */
+
 
 

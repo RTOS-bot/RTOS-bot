@@ -4,7 +4,6 @@
 
 #include "Helper/helper.h"
 #include "Helper/motor.h"
-#include "Helper/gpio.h"
 #include "Helper/led.h"
 #include "Helper/audio.h"
 #include "Helper/core.h"
@@ -13,6 +12,7 @@
 volatile uint8_t rx_data = 0;
 volatile char isMoving = 0;
 osMutexId_t selfDriveMutex;
+
 
 /**
  * Obtains data from the ESP32

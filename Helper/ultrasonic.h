@@ -20,3 +20,4 @@ void activateTrig(void);
 void PORTD_IRQHandler(void);
 
 #endif
+

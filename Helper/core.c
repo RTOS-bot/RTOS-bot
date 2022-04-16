@@ -1,7 +1,5 @@
 #include "core.h"
 
-osSemaphoreId_t musicSem;
-osSemaphoreId_t selfDrivingSem;
 
 /**
  * Obtains the port mask for SIM_SCGC5 register
@@ -22,14 +20,3 @@ uint32_t getPortMask(PORT_Type *port) {
     return SIM_SCGC5_PORTE_MASK;
 }
 
-/**
- * Delay function
- *
- * @param nof Number of instruction cycles to delay
- */
-static void delay (volatile uint32_t nof) {
-	while (nof != 0) {
-		__asm("NOP");
-		nof--;
-	}
-}

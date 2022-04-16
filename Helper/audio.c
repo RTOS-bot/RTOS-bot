@@ -2,6 +2,8 @@
 #include "pwm.h"
 #include "core.h"
 
+osSemaphoreId_t musicSem;
+
 
 const int raiderMelody[] = {
     NOTE_E4, 
